@@ -1,0 +1,78 @@
+<template>
+    <div class="panel">
+        <v-form ref="form" >
+            <v-layout  row justify-start>
+                <v-flex sm3>
+                    <v-text-field
+                            ref="taskName"
+                            @keyup.enter="addTask"
+                            v-model="taskName"
+                            label="Task name"
+                            single-line
+                            :rules="[() => !!taskName || 'Необходимо ввести название задачи!']"
+                    ></v-text-field>
+                </v-flex>
+
+                <v-flex  xs12 sm3>
+                    <v-text-field
+
+                            ref="taskContent"
+                            @keyup.enter="addTask"
+                            v-model="taskContent"
+                            label="Task content"
+                            single-line
+                            :rules="[() => !!taskContent || 'Необходимо ввести описание задачи!']"
+                            required
+                    ></v-text-field>
+                </v-flex>
+            </v-layout>
+        </v-form>
+
+
+        <!--<input  @keyup.enter="" placeholder="Task name" autofocus-->
+               <!--class="text-input">-->
+        <!--<input   placeholder="Task content" autofocus-->
+               <!--class="text-input">-->
+        <!--<button>Clear List</button>-->
+
+    </div>
+</template>
+
+<script>
+
+    export default {
+        name: 'CreateTask',
+        data() {
+
+            return {
+
+                taskName: "",
+                taskContent: ""
+
+            }
+        },
+        methods: {
+
+
+            addTask() {
+
+
+                var taskContent = this.taskContent.trim();
+                var taskName = this.taskName.trim();
+                if (taskContent && taskName) {
+                    console.log(this.$refs)
+                    this.$refs.taskName.validate(true)
+                    this.$refs.taskContent.validate(true)
+                    this.$parent.addTask(this.taskName, this.taskContent)
+                    this.$socket.emit("getTasks");
+                    this.taskName = "";
+                    this.taskContent = "";
+
+                }
+
+            }
+
+        }
+
+    }
+</script>

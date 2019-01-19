@@ -1,0 +1,25 @@
+.v-input__slot {
+  min-height: 40px !important;
+}
+
+.v-input__append-inner {
+  margin-top: 8px !important;
+}
+
+.v-text-field--outline .v-label {
+  top: 10px !important;
+}
+
+.v-select__selection--comma {
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  margin: 3px 4px 7px 0 !important;
+}
+
+.theme--light.v-text-field--outline > .v-input__control > .v-input__slot {
+  border: 1px solid rgba(0, 0, 0, .54) !important;
+}
