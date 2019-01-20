@@ -1,6 +1,8 @@
+import config from 'config';
 import mongoose from 'mongoose';
+const mongoConfig = config.get('Mongo');
 
-const db = mongoose.createConnection('mongodb://localhost/test');
+const db = mongoose.createConnection(mongoConfig.db);
 
 db.on('connected', () => {
   console.log('connected to mongodb');

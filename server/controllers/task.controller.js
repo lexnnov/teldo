@@ -1,10 +1,9 @@
 import io from '../server';
-import helpers from '../serverHelper';
+import helpers from './helper';
 import UserSchema from '../models/user.model';
 import TaskSchema from '../models/task.model';
 import db from '../config/mongo';
-
-const Event = require('../events/Events').eventBus;
+import Event from '../config/Events';
 
 const addTask = (res) => {
   console.log('addTask');
@@ -49,11 +48,7 @@ const getTasks = () => {
     taskss.forEach((taks) => {
       tasks[taks._id] = taks;
     });
-    // console.log(tasks);
-
-
     io.sockets.emit(('getTasks'), { data: tasks });
-
   });
 };
 

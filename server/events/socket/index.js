@@ -1,7 +1,7 @@
 import tasksHandler from '../../controllers/task.controller';
 import authHandler from '../../controllers/auth.controller';
-
-const Event = require('../Events').eventBus;
+import Event from '../../config/Events';
+// const Event = require('../Events').eventBus;
 
 const mountSockets = (io) => {
 

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-  import Main from '../Views/Main/Main'
+  import Main from '../views/Main/Main'
 
     export default {
         name: 'App',

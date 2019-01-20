@@ -8,8 +8,7 @@
   },
   "scripts": {
     "build": "export NODE_ENV=production && webpack",
-    "nodemon": "nodemon ./start.js",
-    "nodemon1": "export NODE_ENV=production && nodemon ./start.js"
+    "nodemon": "export NODE_ENV=development && nodemon ./start.js"
   },
   "author": "",
   "license": "ISC",

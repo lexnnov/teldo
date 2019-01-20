@@ -1,8 +1,12 @@
-import mongoose from 'mongoose';
 import UserSchema from '../../models/user.model';
+import TaskSchema from '../../models/task.model';
 import botEvents from '../../controllers/bot.controller';
+import Event from '../../config/Events';
+import db from '../../config/mongo';
 
-const Event = require('../Events').eventBus;
+const Users = db.model('users', UserSchema);
+const Tasks = db.model('tasks', TaskSchema);
+
 
 const mountBotEvents = (bot) => {
 
@@ -30,28 +34,40 @@ const mountBotEvents = (bot) => {
 
     // console.log(cb)
     if (cb.data === '1') {
+      let id = '';
+      let taskName = '';
+      let taskContent = '';
+      Users.findOne({ telegramId: cb.from.id }, (err, taskObj) => {
+        if (taskObj) {
+          if (taskObj.tasks.length !== 0) {
+            taskObj.tasks.forEach((task) => {
 
-      const db = mongoose.createConnection('mongodb://localhost/test');
+              Tasks.findOne({ id: task }).then((obj) => {
+                return obj;
+              }).then((obj) => {
+                id = 'task #' + task + '\nname: ' + obj.taskname + '\ncontent: ' + obj.taskcontent;
+                bot.sendMessage(cb.from.id, id, { parse_mode: 'Markdown' });
+              });
 
-      const Test = db.model('users', UserSchema);
-      Test.findOne({ telegramId: cb.from.id }, (err, obj) => {
-        console.log(obj);
+            });
+          }else {
+            bot.sendMessage(cb.from.id, 'У вас нет задач!');
+          }
 
-        var id = '';
-        for (var i = 0; i < obj.tasks.length; i++) {
-          id += '#' + obj.tasks[i] + ' '; // or however you want to format it
+        } else {
+          bot.sendMessage(cb.from.id, 'Вас нет в базе!');
         }
-        console.log(id);
-        bot.sendMessage(cb.from.id, id);
+
+
 
       });
 
     } else if (cb.data === 'data 2') {
       bot.sendMessage(cb.from.id, 'все равно Иди в жопу');
     } else {
-      bot.sendMessage(cb.from.id, 'дф-да, все равно Иди в жопу');
+      bot.sendMessage(cb.from.id, 'да-да, все равно Иди в жопу');
     }
   });
-}
+};
 
 export default mountBotEvents;

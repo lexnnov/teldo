@@ -1,5 +1,4 @@
 import config from 'config';
-import './production';
 import TelegramBot from 'node-telegram-bot-api';
 import Agent from 'socks5-https-client/lib/Agent';
 

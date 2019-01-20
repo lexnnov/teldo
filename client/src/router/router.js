@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import View1 from '../Views/Children/Children';
+import View1 from '../views/Children/Children';
 import Login from '../components/Login/Login';
 import Todo from '../components/ToDo/Todo';
 import PageNotFound from '../components/notfound/NotFound';

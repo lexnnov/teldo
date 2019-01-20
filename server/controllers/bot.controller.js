@@ -1,10 +1,12 @@
 import db from '../config/mongo';
 import UserSchema from '../models/user.model';
 import TaskSchema from '../models/task.model';
-import helpers from '../serverHelper';
+import helpers from './helper';
 import bot from '../config/botConfig';
+import Event from '../config/Events';
 
-const Event = require('../events/Events').eventBus;
+const Users = db.model('users', UserSchema);
+const Tasks = db.model('tasks', TaskSchema);
 
 const start =
   `Команды для работы с ботом:
@@ -18,8 +20,7 @@ const options = {
     inline_keyboard: [
       [
         { text: 'My tasks', callback_data: '1' },
-        { text: 'Кнопка 2', callback_data: 'data 2' },
-        { text: 'Кнопка 3', callback_data: 'text 3' },
+
       ],
     ],
   }),
@@ -27,8 +28,7 @@ const options = {
 
 function userExistence(userId, textIfInBD, textIfOutBD) {
 
-  const Test = db.model('tests', UserSchema);
-  Test.findOne({ telegramId: userId }, (err, obj) => {
+  Tasks.findOne({ telegramId: userId }, (err, obj) => {
     if (err) {
       console.error('err', err);
     }
@@ -42,20 +42,21 @@ function userExistence(userId, textIfInBD, textIfOutBD) {
 
 const addUser = (msg, match) => {
   console.log('addUser');
-  const Test = db.model('users', UserSchema);
-  Test.findOne({ telegramId: msg.chat.id }, (err, obj) => {
+  console.log(msg);
+  Users.findOne({ telegramId: msg.from.id }, (err, obj) => {
     if (!obj) {
-      const test = new Test({
-        telegramId: msg.chat.id,
-        username: msg.chat.username,
-        firstname: msg.chat.first_name,
-        lastname: msg.chat.last_name,
+      console.log(obj);
+      const user = new Users({
+        telegramId: msg.from.id,
+        username: msg.from.username,
+        firstname: msg.from.first_name,
+        lastname: msg.from.last_name,
         role: 'Developer',
         tasks: [],
         password: '',
       });
 
-      Test.create(test, (err, doc) => {
+      Users.create(user, (err, doc) => {
         if (err) {
           return console.error(err);
         }
@@ -75,44 +76,45 @@ const addUser = (msg, match) => {
 
 
 const endTask = (msg, match) => {
-  const taskid = match[1];
-  const Users = db.model('users', UserSchema);
-  const Tasks = db.model('tasks', TaskSchema);
-
-  Users.findOne({ telegramId: msg.chat.id, 'tasks': { $in: match[1] } }, (err, doc) => {
-    if (err) {
-      console.log('Something wrong when updating data!');
-    }
-
-    if (doc) {
-      Tasks.findOneAndUpdate({ id: match[1] }, { $set: { state: 'review' } }, (err, doc) => {
+  console.log('endTask')
+  Users.findOne({ telegramId: msg.from.id }, (err, user) => {
+    if (user) {
+      Users.findOne({ telegramId: msg.from.id, 'tasks': { $in: match[1] } }, (err, doc) => {
         if (err) {
           console.log('Something wrong when updating data!');
         }
 
-        bot.sendMessage(msg.chat.id, `пользователь ${msg.chat.id} отправил задачу ${match[1]} на ревью `);
-        Event.emit('update');
-        console.log(Event);
+        if (doc) {
+          Tasks.findOneAndUpdate({ id: match[1] }, { $set: { state: 'review' } }, (err, doc) => {
+            if (err) {
+              console.log('Something wrong when updating data!');
+            }
+
+            bot.sendMessage(msg.from.id, `пользователь ${msg.from.id} отправил задачу ${match[1]} на ревью `);
+            Event.emit('update');
+            console.log(Event);
+          });
+        }
+
+        bot.sendMessage(msg.from.id, `У вас нет такой задачи`);
+
       });
+    } else {
+      bot.sendMessage(msg.from.id, `Вас нет в базе!`);
     }
+  })
+}
 
-    bot.sendMessage(msg.chat.id, `У вас нет такой задачи`);
-
-  });
-
-};
 
 const leaveFromBot = (msg, match) => {
 
-  const Test = db.model('users', UserSchema);
-  Test.deleteOne({ telegramId: msg.from.id }, (err, obj) => {
+  Users.deleteOne({ telegramId: msg.from.id }, (err, obj) => {
 
     console.log('obj123123123', msg.from.username);
 
     // console.log(username)
     bot.sendMessage(msg.from.id, 'вы удалены из базы!');
 
-    const Tasks = db.model('tasks', TaskSchema);
     Tasks.updateMany({ executer: msg.from.username }, { $set: { executer: 'нет исполнителя' } }, (err, doc) => {
       if (err) {
         console.log('Ssdfsdfsdomething wrong when updating data!');
@@ -150,8 +152,15 @@ const addTask = (msg, match) => {
   }
 };
 
-const getTasks = (msg, match) => {
-  bot.sendMessage(msg.chat.id, 'Выберите любую кнопку:', options);
+const getTasks = (msg) => {
+  Users.findOne({ telegramId: msg.from.id }, (err, user) => {
+    console.log(user)
+    if (user) {
+      bot.sendMessage(msg.chat.id, 'Выберите любую кнопку:', options);
+    } else {
+      bot.sendMessage(msg.chat.id, 'Вас нет в базе!');
+    }
+  })
 };
 
 

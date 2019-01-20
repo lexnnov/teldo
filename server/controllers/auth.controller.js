@@ -2,7 +2,7 @@ import db from '../config/mongo';
 import UserSchema from '../models/user.model';
 import io from '../server';
 
-const Event = require('../events/Events').eventBus;
+const Event = require('../config/Events').eventBus;
 
 const login = (data, socket) => {
   console.log(data);

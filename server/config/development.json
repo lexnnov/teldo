@@ -3,5 +3,8 @@
     "API": "703912381:AAEDXAeI8LjsqBeGdVMroDjRw-MgJDx4YP0",
     "SocksHost" : "128.199.99.165",
     "SocksPort" : "1080"
+  },
+  "Mongo": {
+    "db": "mongodb://localhost/test"
   }
 }
