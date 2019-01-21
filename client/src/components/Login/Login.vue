@@ -116,7 +116,7 @@
     socket: {
 
       events: {
-        Login(res) {
+        login(res) {
           console.log(res.data)
           switch (res.data) {
 
@@ -140,10 +140,11 @@
           }
         },
 
-        resPassword(res) {
+        result_password(res) {
+          console.log(res)
           switch (res.data) {
             case 'admin':
-              this.notify('foo', 'Password', 'Пароль отправлен вам в телеграмм');
+              this.notify('foo', 'Password', 'Пароль отправлен вам в телеграм');
               break;
             case 'no_admin':
               this.notify('error', 'ERROR', 'У вас нет доступа!');

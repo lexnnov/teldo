@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
+import db from '../config/mongo';
 
-const Schema = mongoose.Schema;
-
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
   telegramId: Number,
   username: String,
   firstname: String,
@@ -12,4 +11,4 @@ const UserSchema = new Schema({
   password: String,
 });
 
-export default UserSchema;
+export default db.model('users', UserSchema);

@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
+import db from '../config/mongo';
 
-const Schema = mongoose.Schema;
-
-const TaskModel = new Schema({
+const UserSchema = new mongoose.Schema({
   id: Number,
   taskname: String,
   taskcontent: String,
@@ -12,4 +11,4 @@ const TaskModel = new Schema({
   help: Number,
 });
 
-export default TaskModel;
+export default db.model('tasks', UserSchema);

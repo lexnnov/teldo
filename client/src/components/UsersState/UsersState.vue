@@ -11,7 +11,7 @@
 
       <v-flex sm3>
         <v-select :value="item.role" hide-details style="min-height: 40px;"
-                  hide-selected height="1" outline :items="['Admin', 'Developer']" label="Роль"
+                  hide-selected height="1" outline :items="['admin', 'developer']" label="Роль"
                   v-on:change="setRole(item.telegramId, $event)"/>
       </v-flex>
 

@@ -1,15 +1,12 @@
-import db from '../config/mongo';
-import UserSchema from '../models/user.model';
-import TaskSchema from '../models/task.model';
-import helpers from './helper';
+import Users from '../models/user.model';
+import Tasks from '../models/task.model';
+import helpers from '../helpers/helper';
 import bot from '../config/botConfig';
 import Event from '../config/Events';
+import States from '../constants/states';
+import Events from '../constants/events';
 
-const Users = db.model('users', UserSchema);
-const Tasks = db.model('tasks', TaskSchema);
-
-const start =
-  `Команды для работы с ботом:
+const start = `Команды для работы с ботом:
 /tasks - показывает список выших задач,
 /endtask << # >> - переносит выбранную задачу на ревью
 /leave - удаляет вас иp базы данных разработчиков
@@ -27,12 +24,8 @@ const options = {
 };
 
 function userExistence(userId, textIfInBD, textIfOutBD) {
-
-  Tasks.findOne({ telegramId: userId }, (err, obj) => {
-    if (err) {
-      console.error('err', err);
-    }
-    if (!(obj === null)) {
+  Tasks.findOne({ telegramId: userId }).then((obj) => {
+    if (obj) {
       bot.sendMessage(userId, textIfInBD);
     } else {
       bot.sendMessage(userId, textIfOutBD);
@@ -40,127 +33,148 @@ function userExistence(userId, textIfInBD, textIfOutBD) {
   });
 }
 
-const addUser = (msg, match) => {
+const addUser = (msg) => {
   console.log('addUser');
   console.log(msg);
-  Users.findOne({ telegramId: msg.from.id }, (err, obj) => {
-    if (!obj) {
-      console.log(obj);
-      const user = new Users({
-        telegramId: msg.from.id,
-        username: msg.from.username,
-        firstname: msg.from.first_name,
-        lastname: msg.from.last_name,
-        role: 'Developer',
-        tasks: [],
-        password: '',
-      });
+  Users.findOne({ telegramId: msg.from.id })
+    .then((err, obj) => {
+      if (!obj) {
+        console.log(obj);
+        const user = new Users({
+          telegramId: msg.from.id,
+          username: msg.from.username,
+          firstname: msg.from.first_name,
+          lastname: msg.from.last_name,
+          role: States.ROLE_DEVELOPER,
+          tasks: [],
+          password: '',
+        });
 
-      Users.create(user, (err, doc) => {
-        if (err) {
-          return console.error(err);
-        }
-        console.log(doc);
-      });
+        Users.create(user).then((doc) => {
+          console.log(doc);
+        });
 
-      Event.emit('update');
+        Event.emit(Events.EVENT_UPDATE);
 
-      bot.sendMessage(msg.chat.id, 'Вы добавлены в базу!');
-      bot.sendMessage(msg.chat.id, start);
-    } else {
-      bot.sendMessage(msg.chat.id, 'Вы уже есть в базе!');
-      bot.sendMessage(msg.chat.id, start);
-    }
-  });
+        bot.sendMessage(msg.from.id, 'Вы добавлены в базу!');
+        bot.sendMessage(msg.from.id, start);
+      } else {
+        bot.sendMessage(msg.from.id, 'Вы уже есть в базе!');
+        bot.sendMessage(msg.from.id, start);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 
 const endTask = (msg, match) => {
-  console.log('endTask')
+  console.log('endTask');
   Users.findOne({ telegramId: msg.from.id }, (err, user) => {
     if (user) {
-      Users.findOne({ telegramId: msg.from.id, 'tasks': { $in: match[1] } }, (err, doc) => {
-        if (err) {
-          console.log('Something wrong when updating data!');
-        }
-
-        if (doc) {
-          Tasks.findOneAndUpdate({ id: match[1] }, { $set: { state: 'review' } }, (err, doc) => {
-            if (err) {
-              console.log('Something wrong when updating data!');
-            }
-
-            bot.sendMessage(msg.from.id, `пользователь ${msg.from.id} отправил задачу ${match[1]} на ревью `);
-            Event.emit('update');
-            console.log(Event);
-          });
-        }
-
-        bot.sendMessage(msg.from.id, `У вас нет такой задачи`);
-
-      });
+      Users.findOne({ telegramId: msg.from.id, tasks: { $in: match[1] } })
+        .then((doc) => {
+          if (doc) {
+            Tasks.findOneAndUpdate({ id: match[1] }, { $set: { state: 'review' } })
+              .then(() => {
+                // bot.sendMessage(msg.from.id, `пользователь ${msg.from.id} отправил задачу ${match[1]} на ревью `);
+                bot.sendMessage(msg.from.id, `Вы отправили задачу ${match[1]} на ревью`);
+                Event.emit(Events.EVENT_UPDATE);
+                console.log(Event);
+              });
+          } else {
+            bot.sendMessage(msg.from.id, 'У вас нет такой задачи');
+          }
+        });
     } else {
-      bot.sendMessage(msg.from.id, `Вас нет в базе!`);
+      bot.sendMessage(msg.from.id, 'Вас нет в базе!');
     }
-  })
-}
-
-
-const leaveFromBot = (msg, match) => {
-
-  Users.deleteOne({ telegramId: msg.from.id }, (err, obj) => {
-
-    console.log('obj123123123', msg.from.username);
-
-    // console.log(username)
-    bot.sendMessage(msg.from.id, 'вы удалены из базы!');
-
-    Tasks.updateMany({ executer: msg.from.username }, { $set: { executer: 'нет исполнителя' } }, (err, doc) => {
-      if (err) {
-        console.log('Ssdfsdfsdomething wrong when updating data!');
-      }
-      console.log('sdfsdfsdfds', doc);
-      Event.emit('update');
-    });
   });
+};
+
+
+const leaveFromBot = (msg) => {
+  Users.deleteOne({ telegramId: msg.from.id })
+    .then(() => {
+      // console.log(username)
+      bot.sendMessage(msg.from.id, 'вы удалены из базы!');
+      Tasks.updateMany({ executer: msg.from.username }, { $set: { executer: 'нет исполнителя' } })
+        .then((doc) => {
+          console.log('doc', doc);
+          Event.emit(Events.EVENT_UPDATE);
+        });
+    });
 };
 
 const addTask = (msg, match) => {
   console.log('addTask');
-  console.log('msgsdfdsf', msg);
   if (msg.from.id === 496402356) {
-    const Tasks = db.model('tasks', TaskSchema);
-
-
     const test = new Tasks({
       taskname: match[1],
       taskcontent: match[2],
       id: helpers.generateId(),
-      state: 'to_do',
-      executer: 'нет исполнителя',
+      state: States.STATE_TO_DO,
+      executer: States.EXECUTOR,
       position: 0,
     });
-    Tasks.create(test, (err, doc) => {
-      if (err) {
-        console.error(err);
-      }
-      console.log(doc);
-      Event.emit('update');
-    });
+    Tasks.create(test)
+      .then((doc) => {
+        console.log(doc);
+        Event.emit(Events.EVENT_UPDATE);
+      });
   } else {
     userExistence(msg.from.id, 'У вас нет прав на добавление задач', 'Вы не являетесь участником проекта');
   }
 };
 
 const getTasks = (msg) => {
-  Users.findOne({ telegramId: msg.from.id }, (err, user) => {
-    console.log(user)
-    if (user) {
-      bot.sendMessage(msg.chat.id, 'Выберите любую кнопку:', options);
-    } else {
-      bot.sendMessage(msg.chat.id, 'Вас нет в базе!');
-    }
-  })
+  Users.findOne({ telegramId: msg.from.id })
+    .then((user) => {
+      console.log(user);
+      if (user) {
+        bot.sendMessage(msg.from.id, 'Выберите любую кнопку:', options);
+      } else {
+        bot.sendMessage(msg.from.id, 'Вас нет в базе!');
+      }
+    });
+};
+
+const myTasks = (cb) => {
+  if (cb.data === '1') {
+    let id = '';
+    Users.findOne({ telegramId: cb.from.id })
+      .then((taskObj) => {
+        if (taskObj) {
+          if (taskObj.tasks.length !== 0) {
+            taskObj.tasks.forEach((task) => {
+              Tasks.findOne({ id: task })
+                .then((obj) =>{
+                  return obj;
+                })
+                .then((obj) => {
+                  id = 'task #' + task + '\nname: ' + obj.taskname + '\ncontent: ' + obj.taskcontent;
+                  bot.sendMessage(cb.from.id, id, { parse_mode: 'Markdown' });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            });
+          } else {
+            bot.sendMessage(cb.from.id, 'У вас нет задач!');
+          }
+        } else {
+          bot.sendMessage(cb.from.id, 'Вас нет в базе!');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else if (cb.data === 'data 2') {
+    bot.sendMessage(cb.from.id, 'все равно Иди в жопу');
+  } else {
+    bot.sendMessage(cb.from.id, 'да-да, все равно Иди в жопу');
+  }
 };
 
 
@@ -170,4 +184,5 @@ export default {
   leaveFromBot,
   addTask,
   getTasks,
+  myTasks,
 };

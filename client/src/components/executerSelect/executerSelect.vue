@@ -2,7 +2,7 @@
   <v-select :key="keys" :value="value" hide-details style="min-height: 40px;"
             hide-selected height="1" outline
             :items="users" label="Исполнитель"
-            v-on:change="setExecuter(keys, $event)"/>
+            v-on:change="setExecutor(keys, $event)"/>
 </template>
 
 <script>
@@ -14,9 +14,9 @@
     },
     methods: {
 
-      setExecuter(taskId, username) {
+      setExecutor(taskId, username) {
         // console.log(taskId, username)
-        this.$socket.emit('setExecuter', { username, taskId });
+        this.$socket.emit('setExecutor', { username, taskId });
       },
 
     }

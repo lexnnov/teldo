@@ -46,12 +46,12 @@
 
       events: {
 
-        getTasks(response) {
+        get_tasks(response) {
 
           this.$store.dispatch('GETTASKS', response);
         },
 
-        getUsers(response) {
+        get_users(response) {
 
 
 
@@ -68,7 +68,7 @@
 
         },
 
-        getUpdate() {
+        get_updates() {
           this.getTasks();
           this.getUsers();
         },
