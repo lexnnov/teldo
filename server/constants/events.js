@@ -15,7 +15,6 @@ export default {
 
   SOCKET_ON_CONNECTION: 'connection',
 
-
   SOCKET_ON_LOGIN: 'login',
   SOCKET_ON_REQ_PASSWORD: 'reqPassword',
 
@@ -29,11 +28,10 @@ export default {
   SOCKET_ON_SET_TASK: 'setTask',
 
 
-
   // EVENT EMITTER //
 
   EVENT_UPDATE: 'update',
-  EVENT_SET_EXICUTOR_BOT: 'set_executer_bot',
+  EVENT_SET_EXECUTOR_BOT: 'set_executer_bot',
   EVENT_RESULT_PASSWORD: 'result_password',
 
 

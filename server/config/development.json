@@ -1,7 +1,7 @@
 {
   "TelegramBot": {
     "API": "703912381:AAEDXAeI8LjsqBeGdVMroDjRw-MgJDx4YP0",
-    "SocksHost" : "128.199.99.165",
+    "SocksHost" : "80.252.241.107",
     "SocksPort" : "1080"
   },
   "Mongo": {

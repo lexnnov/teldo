@@ -7,39 +7,35 @@
 </template>
 
 <script>
-  import Menu from '../../components/Menu/Menu'
-  export default {
-    name: "Children",
-    components: {Menu},
-    data () {
-      return {
+  import Menu from '../../components/Menu/Menu';
 
-      }
+  export default {
+    name: 'Children',
+    components: { Menu },
+    data() {
+      return {};
     },
     methods: {
       getTasks() {
-        this.$socket.emit("getTasks");
+        this.$socket.emit('getTasks');
       },
 
       getUsers() {
-        this.$socket.emit("getUsers");
+        this.$socket.emit('getUsers');
       },
 
 
     },
 
-    computed : {
-
-    },
+    computed: {},
 
     mounted() {
       setTimeout(() => {
-        this.getTasks()
+        this.getTasks();
         this.getUsers();
 
       }, 1000);
     },
-
 
 
     socket: {
@@ -47,13 +43,17 @@
       events: {
 
         get_tasks(response) {
-
+          if (response.data !== 'no_tasks') {
+            this.$store.dispatch('ISTASKS', true);
+          } else {
+            this.$store.dispatch('ISTASKS', false);
+          }
+          this.$store.dispatch('LOADING', false);
           this.$store.dispatch('GETTASKS', response);
+
         },
 
         get_users(response) {
-
-
 
           this.$store.dispatch('DELUSERS');
 

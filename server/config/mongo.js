@@ -2,14 +2,14 @@ import config from 'config';
 import mongoose from 'mongoose';
 const mongoConfig = config.get('Mongo');
 
-const db = mongoose.createConnection(mongoConfig.db);
+mongoose.connect(mongoConfig.db);
 
-db.on('connected', () => {
+mongoose.connection.on('connected', () => {
   console.log('connected to mongodb');
 });
 
-db.on('disconnected', () => {
+mongoose.connection.on('disconnected', () => {
   console.log('connection disconnected');
 });
 
-export default db;
+export default mongoose;

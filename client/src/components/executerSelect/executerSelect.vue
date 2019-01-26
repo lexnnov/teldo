@@ -15,8 +15,9 @@
     methods: {
 
       setExecutor(taskId, username) {
-        // console.log(taskId, username)
-        this.$socket.emit('setExecutor', { username, taskId });
+
+        let telegramId = this.$store.getters.users.find((user)=> user.username === username ).telegramId
+        this.$socket.emit('setExecutor', { username, taskId, telegramId });
       },
 
     }

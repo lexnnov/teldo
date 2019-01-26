@@ -6,7 +6,10 @@ module.exports = {
       "no-console": "off",
       "max-len": ["error", { "code": 120 }],
       "prefer-destructuring": ["error", {"object": false, "array": false}],
-      "no-param-reassign": [2, { "props": false }]
+      "no-param-reassign": [2, { "props": false }],
+      "no-throw-literal": "off",
+      "import/no-cycle:": 'off',
+      "consistent-return": "off"
 
     }
 };

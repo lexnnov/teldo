@@ -10,6 +10,14 @@ const io = require('socket.io')(server);
 mountSocketEvents(io);
 mountBotEvents(bot);
 
+app.use(express.static('../client/dist'));
+app.get('/', function (req, res) {
+  console.log('asdasdasd')
+  res.sendFile('../client/dist/index.html');
+  // logger.info('hello world');
+//   res.send(yandex);
+});
+
 
 server.listen(3008);
 

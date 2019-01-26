@@ -17,7 +17,7 @@ const mountBotEvents = (bot) => {
   bot.onText(/\/addtask (.+); (.+)/, botEvents.addTask);
 
 
-  Event.on(Events.EVENT_SET_EXICUTOR_BOT, (id, taskid, taskname, taskcontent) => {
+  Event.on(Events.EVENT_SET_EXECUTOR_BOT, (id, taskid, taskname, taskcontent) => {
     bot.sendMessage(id, 'У вас новая задача! \ntask #' + taskid + '\nname: ' + taskname + '\ncontent: ' + taskcontent);
   });
 

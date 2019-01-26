@@ -44,7 +44,14 @@
 
 
             <div v-else style="display: flex; height: 90%; align-items: center;  justify-content: center;">
-              <circle2/>
+              <div v-if="loading">
+                <circle2/>
+
+              </div >
+              <div v-else>
+                Нет задач
+              </div>
+
             </div>
           </VuePerfectScrollbar>
 
@@ -167,13 +174,24 @@
     computed: {
       rand() {
 
-        if (this.$store.state.tasks.to_do.length !== 0 || this.$store.state.tasks.in_progress.length !== 0 || this.$store.state.tasks.review.length !== 0 || this.$store.state.tasks.in_build.length !== 0) {
+        if (this.$store.state.socket.isTasks) {
+          console.log(true);
+          return true;
+        }
+        console.log(false);
+        return false; //ожидалось что app.rand будет давать случайное число
+      },
+
+      loading() {
+
+        if (this.$store.state.socket.loading) {
           console.log(true);
           return true;
         }
         console.log(false);
         return false; //ожидалось что app.rand будет давать случайное число
       }
+
     }
 
   };
