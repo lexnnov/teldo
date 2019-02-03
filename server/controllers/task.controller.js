@@ -5,6 +5,7 @@ import Users from '../models/user.model';
 import Tasks from '../models/task.model';
 import Event from '../config/Events';
 import Events from '../constants/events';
+import States from '../constants/states';
 
 const addTask = (res) => {
   console.log('addTask');
@@ -13,8 +14,8 @@ const addTask = (res) => {
     taskname: res.task_name,
     taskcontent: res.task_content,
     id: helpers.generateId(),
-    state: 'to_do',
-    executer: 'нет исполнителя',
+    state: States.STATE_TO_DO,
+    executor: States.EXECUTOR,
     position: res.index,
   });
 };
@@ -71,12 +72,12 @@ const setTask = (res) => {
 
 const delTask = (res) => {
   console.log('delTask');
-  let lastExecuter;
+  let lastexecutor;
   Tasks.findOne({ _id: res.taskid })
     .then((doc) => {
       if (!doc) throw 'Нет задач в БД';
-      lastExecuter = doc.executer;
-      return Users.update({ username: lastExecuter }, { $pull: { tasks: doc.id } });
+      lastexecutor = doc.executor;
+      return Users.update({ username: lastexecutor }, { $pull: { tasks: doc.id } });
     })
     .catch((err) => {
       console.log('ERROR', err);
@@ -103,24 +104,23 @@ const setRole = (res) => {
     });
 };
 
-const setTaskExecuter = (res) => {
-  console.log('setExecuter');
-
-  let lastExecuter;
+const setTaskExecutor = (res) => {
+  console.log('setexecutor');
+  let lastexecutor;
   Tasks.findOne({ _id: res.taskId })
     .then((doc) => {
       if (!doc) throw 'Нет пользоватедя в БД';
-      lastExecuter = doc.executer;
-      return Users.update({ username: lastExecuter }, { $pull: { tasks: doc.id } });
+      lastexecutor = doc.executor;
+      return Users.update({ username: lastexecutor }, { $pull: { tasks: doc.id } });
     })
     .catch((err) => {
       console.log('ERROR', err);
     });
 
-  Tasks.findOneAndUpdate({ _id: res.taskId }, { $set: { executer: res.username } })
+  Tasks.findOneAndUpdate({ _id: res.taskId }, { $set: { executor: res.username } })
     .then((doc) => {
       io.sockets.emit((Events.SOCKET_EMIT_GET_UPDATES));
-      if (!(res.username === 'нет исполнителя')) {
+      if (!(res.username === States.EXECUTOR)) {
         Event.emit((Events.EVENT_SET_EXECUTOR_BOT), res.telegramId, doc.id, doc.taskname, doc.taskcontent);
         return Users.findOneAndUpdate({ username: res.username }, { $addToSet: { tasks: doc.id } }, { new: true });
       }
@@ -135,7 +135,7 @@ export default {
   getUser,
   getTasks,
   setTask,
-  setTaskExecuter,
+  setTaskExecutor,
   setRole,
   delTask,
 };

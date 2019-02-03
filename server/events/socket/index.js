@@ -23,7 +23,7 @@ const mountSockets = (io) => {
 
     socket.on(Events.SOCKET_ON_ADD_TASK, tasksHandler.addTask);
 
-    socket.on(Events.SOCKET_ON_SET_EXECUTOR, tasksHandler.setTaskExecuter);
+    socket.on(Events.SOCKET_ON_SET_EXECUTOR, tasksHandler.setTaskExecutor);
 
     socket.on(Events.SOCKET_ON_LOGIN, data => authHandler.login(data, socket));
 

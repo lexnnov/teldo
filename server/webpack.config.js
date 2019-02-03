@@ -12,9 +12,6 @@ fs.readdirSync('node_modules')
   });
 
 module.exports = {
-
-
-
   mode: 'production',
   entry: './start.js',
   target: 'node',
@@ -26,17 +23,3 @@ module.exports = {
   devtool: 'sourcemap',
 
 }
-
-//
-//
-// module.exports = {
-//   entry: './start.js',
-//   target: 'node',
-//   output: {
-//     filename: './bundle.js',
-//     library: 'myApp'
-//   },
-//   externals: {
-//     uws: "uws"
-//   },
-// };

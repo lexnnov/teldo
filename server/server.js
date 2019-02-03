@@ -11,7 +11,7 @@ mountSocketEvents(io);
 mountBotEvents(bot);
 
 app.use(express.static('../client/dist'));
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
   console.log('asdasdasd')
   res.sendFile('../client/dist/index.html');
   // logger.info('hello world');

@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema({
   taskname: String,
   taskcontent: String,
   state: String,
-  executer: String,
+  executor: String,
   position: Number,
   help: Number,
 });

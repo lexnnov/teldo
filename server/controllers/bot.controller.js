@@ -75,9 +75,6 @@ const endTask = (msg, match) => {
         bot.sendMessage(msg.from.id, 'Вас нет в базе!');
         throw 'Нет в базе!';
       }
-      return user;
-    })
-    .then(() => {
       return Users.findOne({ telegramId: msg.from.id, tasks: { $in: match[1] } });
     })
     .then((doc) => {
@@ -102,7 +99,7 @@ const leaveFromBot = (msg) => {
       bot.sendMessage(msg.from.id, 'вы удалены из базы!');
     });
 
-  Tasks.updateMany({ executer: msg.from.username }, { $set: { executer: 'нет исполнителя' } })
+  Tasks.updateMany({ executor: msg.from.username }, { $set: { executor: 'нет исполнителя' } })
     .then((doc) => {
       if (!doc) throw 'нет такой задачи';
       console.log('doc', doc);
@@ -121,7 +118,7 @@ const addTask = (msg, match) => {
       taskcontent: match[2],
       id: helpers.generateId(),
       state: States.STATE_TO_DO,
-      executer: States.EXECUTOR,
+      executor: States.EXECUTOR,
       position: 0,
     });
     Tasks.create(test)
@@ -166,7 +163,7 @@ const myTasks = (cb) => {
       })
       .then((obj) => {
         console.log('sdfsdfsdf', obj);
-        return Tasks.find({ executer: obj.username });
+        return Tasks.find({ executor: obj.username });
       })
       .then((obj) => {
         obj.forEach((val) => {
@@ -179,7 +176,6 @@ const myTasks = (cb) => {
       });
   }
 };
-
 
 export default {
   addUser,

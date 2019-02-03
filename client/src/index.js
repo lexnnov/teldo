@@ -7,7 +7,7 @@ import VeeValidate from 'vee-validate';
 import VueLocalStorage from 'vue-localstorage';
 import Notifications from 'vue-notification';
 import router from './router/router';
-import App from './components/App.vue';
+import AppMain from './views/AppMain/AppMain';
 import store from './store';
 
 Vue.use(VeeValidate);
@@ -42,5 +42,5 @@ new Vue({
   store,
   router,
   el: '#app',
-  render: h => h(App),
+  render: h => h(AppMain),
 });

@@ -8,26 +8,12 @@
   export default {
     props: ['delItemId'],
     name: "ButtonDel",
-    data() {
-      return {};
-    },
+
     methods: {
-
-
       delTask() {
         this.$socket.emit("delTask", {taskid: this.delItemId});
       },
-
-
     },
-    socket: {
-
-      events: {
-
-      }
-    }
-
-
   };
 </script>
 

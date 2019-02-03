@@ -55,10 +55,10 @@
 </template>
 
 <script>
-  import Logout from "../Logout/Logout";
+  import Logout from "../../components/Logout/Logout";
 
   export default {
-    name: "Login",
+    name: "Auth",
    components: {Logout},
     data() {
 
@@ -105,13 +105,11 @@
           this.notify('error', 'ERROR', 'Необходимо заполнить все поля!');
         }
 
-        // console.log('1111111111111111')
       },
 
 
     },
 
-    // response from the server
 
     socket: {
 
@@ -162,6 +160,6 @@
 
 <style lang="scss">
 
-  @import "./Login";
+  @import "Auth";
 
 </style>

@@ -1,23 +1,15 @@
-
-
 <template>
-
-
   <div>
-
-
     <v-container fluid grid-list-xl>
-
       <CreateTask/>
-
       <v-layout row justify-space-around class="project-columns">
-        <v-flex v-for="(items, key, index) in this.$store.state.tasks" :key="items.id" v-bind:id="'to_do'" class="project-column" sm4>
-
+        <v-flex v-for="(items, key, index) in this.$store.state.tasks" :key="items.id" v-bind:id="'to_do'"
+                class="project-column" sm4>
           <h4 class="project-column-name">
             <span>{{items.length}}</span>
             {{key}}
           </h4>
-          <VuePerfectScrollbar class="scroll-area" :settings="options" >
+          <VuePerfectScrollbar class="scroll-area" :settings="options">
             <Container v-if="rand" style="height: 90%; " group-name="1"
                        :get-child-payload="getPayload(key)"
                        @drop="onDrop(key, $event)">
@@ -35,19 +27,13 @@
                   </div>
 
                   <executer-select :keys="item.id" :value="item.executer" :users="$store.state.users.usersname"/>
-
                 </div>
-
               </Draggable>
-
             </Container>
-
-
             <div v-else style="display: flex; height: 90%; align-items: center;  justify-content: center;">
               <div v-if="loading">
                 <circle2/>
-
-              </div >
+              </div>
               <div v-else>
                 Нет задач
               </div>
@@ -69,10 +55,10 @@
   import { Circle2 } from 'vue-loading-spinner';
   import { Container, Draggable } from 'vue-smooth-dnd';
   import { applyDrag } from './helpers';
-  import CreateTask from "../createTaskForm/CreateTask";
-  import Logout from "../Logout/Logout";
-  import ButtonDel from "../ButtonDel/ButtonDel";
-  import ExecuterSelect from "../executerSelect/executerSelect";
+  import CreateTask from '../../../components/CreateTaskForm/CreateTaskForm';
+  import Logout from '../../../components/Logout/Logout';
+  import ButtonDel from '../../../components/DelButton/DelButton';
+  import ExecuterSelect from '../../../components/SelectExecuter/SelectExecuter';
 
   export default {
     name: 'ToDo',
@@ -90,8 +76,8 @@
     data() {
 
       return {
-        from: "",
-        to: "",
+        from: '',
+        to: '',
         taskPosition: '',
         options: {
           wheelSpeed: 0.4,
@@ -105,12 +91,12 @@
       getPayload(key) {
         return (
           key === 'to_do'
-          ? this.getChildPayload1
-          : key === 'in_progress'
-          ? this.getChildPayload2
-          : key === 'review'
-          ? this.getChildPayload3
-          : this.getChildPayload4
+            ? this.getChildPayload1
+            : key === 'in_progress'
+            ? this.getChildPayload2
+            : key === 'review'
+              ? this.getChildPayload3
+              : this.getChildPayload4
         );
       },
 
@@ -152,7 +138,7 @@
 
       addTask(taskName, taskContent) {
 
-        this.$socket.emit("addTask", {
+        this.$socket.emit('addTask', {
           task_name: taskName,
           task_content: taskContent,
           index: this.$store.state.tasks.to_do.length
@@ -161,13 +147,13 @@
 
 
       setTask(from, to, id, index) {
-        this.$socket.emit("setTask", { from, to, id, index });
+        this.$socket.emit('setTask', { from, to, id, index });
         // this.getTasks();
       },
 
 
       setTaskPosition(block, remove, add) {
-        this.$socket.emit("setTaskPosition", { block, remove, add });
+        this.$socket.emit('setTaskPosition', { block, remove, add });
       }
     },
 
@@ -199,6 +185,6 @@
 
 <style lang="scss">
 
-  @import './Todo';
+  @import 'Todo';
 
 </style>

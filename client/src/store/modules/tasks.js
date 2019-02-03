@@ -43,7 +43,7 @@ const mutations = {
           tasknumber: playoad.data[key].id,
           taskname: playoad.data[key].taskname,
           taskcontent: playoad.data[key].taskcontent,
-          executer: playoad.data[key].executer,
+          executer: playoad.data[key].executor,
           position: playoad.data[key].position,
           state: playoad.data[key].state,
 

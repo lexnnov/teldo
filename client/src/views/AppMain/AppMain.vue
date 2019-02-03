@@ -1,27 +1,17 @@
 <template>
-
-
-      <router-view ></router-view>
-
-
-
+  <v-app>
+    <router-view ></router-view>
+  </v-app>
 </template>
 
 <script>
   export default {
-    name: "Main",
-
-    data() {
-      return {}
-    },
+    name: "AppMain",
   }
-
 </script>
 
 <style scoped>
-
-  html{
+  html {
     overflow-y: auto;
   }
-
 </style>

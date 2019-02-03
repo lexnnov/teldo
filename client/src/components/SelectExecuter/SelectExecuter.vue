@@ -9,17 +9,12 @@
   export default {
     name: 'executerSelect',
     props: ['users', 'keys', 'value'],
-    data() {
-      return {};
-    },
+
     methods: {
-
       setExecutor(taskId, username) {
-
         let telegramId = this.$store.getters.users.find((user)=> user.username === username ).telegramId
         this.$socket.emit('setExecutor', { username, taskId, telegramId });
       },
-
     }
   };
 </script>

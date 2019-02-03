@@ -33,6 +33,4 @@ export default {
   EVENT_UPDATE: 'update',
   EVENT_SET_EXECUTOR_BOT: 'set_executer_bot',
   EVENT_RESULT_PASSWORD: 'result_password',
-
-
 };

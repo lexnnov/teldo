@@ -15,7 +15,6 @@
 
                 <v-flex  xs12 sm3>
                     <v-text-field
-
                             ref="taskContent"
                             @keyup.enter="addTask"
                             v-model="taskContent"
@@ -27,38 +26,22 @@
                 </v-flex>
             </v-layout>
         </v-form>
-
-
-        <!--<input  @keyup.enter="" placeholder="Task name" autofocus-->
-               <!--class="text-input">-->
-        <!--<input   placeholder="Task content" autofocus-->
-               <!--class="text-input">-->
-        <!--<button>Clear List</button>-->
-
     </div>
 </template>
 
 <script>
-
     export default {
         name: 'CreateTask',
         data() {
-
             return {
-
                 taskName: "",
                 taskContent: ""
-
             }
         },
         methods: {
-
-
             addTask() {
-
-
-                var taskContent = this.taskContent.trim();
-                var taskName = this.taskName.trim();
+                let taskContent = this.taskContent.trim();
+                let taskName = this.taskName.trim();
                 if (taskContent && taskName) {
                     console.log(this.$refs)
                     this.$refs.taskName.validate(true)
@@ -67,12 +50,8 @@
                     this.$socket.emit("getTasks");
                     this.taskName = "";
                     this.taskContent = "";
-
                 }
-
             }
-
         }
-
     }
 </script>
