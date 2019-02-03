@@ -7,16 +7,6 @@
 <script>
   export default {
     name: "NotFound",
-
-    data() {
-
-      return {
-        login1: '',
-        loggedIn: true
-      }
-    }
-
-
   }
 </script>
 
